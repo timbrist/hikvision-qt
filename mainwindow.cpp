@@ -27,45 +27,6 @@ MainWindow::~MainWindow()
 }
 
 
-void MainWindow::on_pushButton_clicked()
-{
-    MV_CC_DEVICE_INFO_LIST m_stDevList;
-    memset(&m_stDevList, 0, sizeof(MV_CC_DEVICE_INFO_LIST));
-    int nRet = CMyCamera::EnumDevices(&m_stDevList);
-
-    if(nRet != MV_OK)
-    {
-        return;
-    }
-
-
-    CMyCamera *m_pcMyCamera = new CMyCamera;
-    if(m_pcMyCamera == 0)
-    {
-        return;
-    }
-
-    int nRet2 = m_pcMyCamera->Open(m_stDevList.pDeviceInfo[0]);
-    if(nRet2 != MV_OK)
-    {
-        QMessageBox::information(this,"hint","Camera initialization failed");
-    }
-    else
-    {
-        QMessageBox::information(this,"hint","Camera OK");
-    }
-
-    if(m_pcMyCamera->Close() != 0)
-    {
-        QMessageBox::information(this,"hint","Camera Closed Ok");
-    }
-    else {
-
-        QMessageBox::information(this,"hint","Camera Closed failed");
-    }
-
-
-}
 void MainWindow::EnumDevices()
 {
 
@@ -100,17 +61,6 @@ void MainWindow::EnumDevices()
         throw "No device" ;
     }
 }
-void MainWindow::on_pushButton_2_clicked()
-{
-    using namespace std;
-
-    cout << " hello world " << endl;
-
-    EnumDevices();
-    ui->label->setStyleSheet("border:2px solid black;");
-}
-
-
 int MainWindow::OpenDevice()
 {
     //注册回调函数
@@ -142,6 +92,70 @@ int MainWindow::OpenDevice()
     }
     return MV_OK;
 }
+//unsigned int nDataLen, MV_FRAME_OUT_INFO_EX stImageInfo)
+DWORD WINAPI MainWindow::grabbing_img_thread(LPVOID lpParameter)
+{
+    //获取图像
+    //获取1张图
+    unsigned int nRecvBufSize = 0;
+    int nRet = m_pcMyCamera->GetIntValue("PayloadSize", &nRecvBufSize);
+    if(nRet != MV_OK)
+    {
+        QMessageBox::information(this,"hint","failed in get payloadsize");
+    }
+    this->m_nBufSizeForDriver = nRecvBufSize;
+    this->m_pBufForDriver = (unsigned char *)malloc(this->m_nBufSizeForDriver);
+    if (NULL == this->m_pBufForDriver)
+    {
+        QMessageBox::information(this,"hint","malloc m_pBuffordriver failed");
+    }
+
+    //int nBufSize = stIntvalue.nCurValue + 2048;
+
+
+    unsigned int nDataSize = nRecvBufSize ;
+    unsigned int nImageNum = 1;
+    unsigned int nDataLen = 0;
+
+    MV_FRAME_OUT_INFO_EX stImageInfo = {0};
+    memset(&stImageInfo, 0, sizeof(MV_FRAME_OUT_INFO_EX));
+    while(1)
+    {
+        m_pcMyCamera->GetOneFrameTimeout(this->m_pBufForDriver, &nDataLen, this->m_nBufSizeForDriver, &stImageInfo, 1000);
+        //nRet2 = MV_CC_GetOneFrame(m_pcMyCamera->m_hDevHandle, pFrameBuf, nBufSize, &stInfo);
+        HWND MainWndID = (HWND)this->ui->label->winId();
+        int nRet = m_pcMyCamera->Display(MainWndID);
+        if(nRet != MV_OK)
+        {
+            QMessageBox::information(this,"hint", "Display failed");
+            exit(0);
+        }
+        size_t height = stImageInfo.nHeight;
+        size_t width = stImageInfo.nWidth;
+        QImage *img = new QImage( static_cast<int>(width), static_cast<int>(height), QImage::Format_Grayscale16);
+        memcpy( (*img).bits(), this->m_pBufForDriver, stImageInfo.nFrameLen);
+        //QImage *image = new QImage(width, height, QImage::Format_RGB888);
+        //memcpy( (*image).bits(), this->m_pBufForDriver, width*height*3);
+        //ui->label->setScaledContents(true);
+        img->scaled(ui->label->size(), Qt::KeepAspectRatio);
+        ui->label->setPixmap(QPixmap::fromImage(*img) );
+    }
+}
+
+//===========================================以下为按钮==============================
+// ch:按下查找设备按钮:枚举
+void MainWindow::on_pushButton_2_clicked()
+{
+    using namespace std;
+
+    cout << " hello world " << endl;
+
+    EnumDevices();
+    ui->label->setStyleSheet("border:2px solid black;");
+}
+
+
+// ch:按下打开设备按钮：打开设备
 void MainWindow::on_pushButton_3_clicked()
 {
     int nRet = OpenDevice();
@@ -191,7 +205,7 @@ void MainWindow::on_pushButton_5_clicked()
 
     //int nBufSize = stIntvalue.nCurValue + 2048;
 
-
+    // 使用线程替换以下原始代码
     unsigned int nDataSize = nRecvBufSize ;
     unsigned int nImageNum = 1;
     unsigned int nDataLen = 0;
@@ -202,12 +216,6 @@ void MainWindow::on_pushButton_5_clicked()
 
     while(1)
     {
- /*
-         @param       handle                 [IN]          句柄
- *  @param       pData                  [OUT]         图像数据接收指针
- *  @param       nDataSize              [IN]          接收缓存大小
- *  @param       pFrameInfo             [OUT]         图像信息结构体
- * */
         m_pcMyCamera->GetOneFrameTimeout(this->m_pBufForDriver, &nDataLen, this->m_nBufSizeForDriver, &stImageInfo, 1000);
         //nRet2 = MV_CC_GetOneFrame(m_pcMyCamera->m_hDevHandle, pFrameBuf, nBufSize, &stInfo);
         HWND MainWndID = (HWND)this->ui->label->winId();
@@ -227,6 +235,11 @@ void MainWindow::on_pushButton_5_clicked()
         img->scaled(ui->label->size(), Qt::KeepAspectRatio);
         ui->label->setPixmap(QPixmap::fromImage(*img) );
     }
+
+
+
+
+    //hGrab_img_thread = CreateThread(NULL, 0, grabbing_img_thread,this,0,0);
     this->m_bStartGrabbing = TRUE;
     ui->pushButton_5->setDisabled(true);
 

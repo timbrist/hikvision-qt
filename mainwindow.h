@@ -19,7 +19,7 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_pushButton_clicked();
+
     void on_pushButton_2_clicked();
 
     void on_pushButton_3_clicked();
@@ -27,12 +27,17 @@ private slots:
     void on_pushButton_5_clicked();
 
     void on_pushButton_4_clicked();
-
-private:
-    void EnumDevices();
-    int OpenDevice();
 private:
     Ui::MainWindow *ui;
+
+
+//hikvision functions
+public:
+    void EnumDevices();
+    int OpenDevice();
+
+    //采集图片的线程
+   DWORD WINAPI grabbing_img_thread(LPVOID lpParameter);
 
 //海康威视变量
 private:
@@ -46,6 +51,9 @@ private:
 
     unsigned char*  m_pBufForDriver;            // ch:用于从驱动获取图像的缓存 | en:Buffer to get image from driver
     unsigned int    m_nBufSizeForDriver;
+
+    HANDLE hGrab_img_thread;
+
 
 };
 
