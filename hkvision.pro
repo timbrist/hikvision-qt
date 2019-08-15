@@ -27,12 +27,14 @@ CONFIG += c++11
 SOURCES += \
         grab_images.cpp \
         hk/MyCamera.cpp \
+        hk/qt_hik.cpp \
         main.cpp \
         mainwindow.cpp
 
 HEADERS += \
         grab_images.h \
         hk/MyCamera.h \
+        hk/qt_hik.hpp \
         mainwindow.h
 
 FORMS += \

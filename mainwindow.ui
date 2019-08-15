@@ -108,6 +108,58 @@
      <string>停止采集</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="pushButton_6">
+    <property name="geometry">
+     <rect>
+      <x>510</x>
+      <y>50</y>
+      <width>91</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>保存图片(bmp)</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="radioButton">
+    <property name="geometry">
+     <rect>
+      <x>680</x>
+      <y>50</y>
+      <width>91</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>RadioButton</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="radioButton_2">
+    <property name="geometry">
+     <rect>
+      <x>680</x>
+      <y>70</y>
+      <width>91</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>RadioButton2</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_7">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>70</y>
+      <width>80</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>开始采集2</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

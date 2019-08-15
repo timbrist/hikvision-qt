@@ -123,14 +123,18 @@ void MainWindow::on_pushButton_2_clicked()
 
     cout << " hello world " << endl;
 
-    EnumDevices();
+    //EnumDevices();
+    vector< QString > QUserNames;
+    hik.EnumDevices(QUserNames);
+    ui->comboBox->addItem( QUserNames[0]);
     ui->label->setStyleSheet("border:2px solid black;");
 }
 // ch:按下打开设备按钮：打开设备
 void MainWindow::on_pushButton_3_clicked()
 {
-    int nRet = OpenDevice();
-    if(nRet != MV_OK)
+    //int nRet = OpenDevice();
+    int nIndex = ui->comboBox->currentIndex();
+    if(hik.OpenDevice(nIndex) != MV_OK)
     {
         QMessageBox::information(this,"hint","Camera failed");
         throw "Open Fail";
@@ -225,21 +229,13 @@ void MainWindow::on_pushButton_5_clicked()
 //关闭设备
 void MainWindow::on_pushButton_4_clicked()
 {
-
+    hik.CloseDevice();
 }
 
 //停止采集
 void MainWindow::on_pushButton_clicked()
 {
-    if(this->m_pcMyCamera != NULL)
-    {
-        if(m_pcMyCamera->StopGrabbing() != MV_OK)
-            return;
-    }
-    else
-    {
-        return;
-    }
+    hik.StopGrabbing();
 }
 void MainWindow::display_images(QImage *img,
                                 unsigned int nDataLen,
@@ -250,12 +246,13 @@ void MainWindow::display_images(QImage *img,
     HWND MainWndID = (HWND)this->ui->label->winId();
     if (m_pcMyCamera->Display(MainWndID) != MV_OK)
     {
+        //这里可以直接显示图像，这个sdk接口无敌了
         QMessageBox::information(this,"hint", "Display failed");
         exit(0);
     }
-    memcpy( (*img).bits(), this->m_pBufForDriver, stImageInfo.nFrameLen);
-    img->scaled(ui->label->size(), Qt::KeepAspectRatio);
-    ui->label->setPixmap(QPixmap::fromImage(*img) );
+    //memcpy( (*img).bits(), this->m_pBufForDriver, stImageInfo.nFrameLen);
+    //img->scaled(ui->label->size(), Qt::KeepAspectRatio);
+    //ui->label->setPixmap(QPixmap::fromImage(*img) );
 }
 
 void MainWindow::display_imgs()
@@ -286,4 +283,31 @@ void MainWindow::display_imgs()
     memset(&stImageInfo, 0, sizeof(MV_FRAME_OUT_INFO_EX));
     QImage *img = new QImage( WIDTH, HEIGHT, QImage::Format_Grayscale16);
     this->display_images(img, nDataLen, stImageInfo);
+}
+
+//保存图片
+void MainWindow::on_pushButton_6_clicked()
+{
+    if( hik.SaveBmp() != 0 )
+    {
+        QMessageBox::information(this, "hint", "save bmp failed");
+    }
+}
+
+
+void MainWindow::on_radioButton_clicked()
+{
+    if ( hik.SetTriggerMode(0) != MV_OK)
+        return;
+        //QMessageBox::infomation();
+}
+
+void MainWindow::on_radioButton_2_clicked()
+{
+}
+
+void MainWindow::on_pushButton_7_clicked()
+{
+    HWND MainWndID = (HWND)this->ui->label->winId();
+    hik.StartGrabbing(MainWndID);
 }
