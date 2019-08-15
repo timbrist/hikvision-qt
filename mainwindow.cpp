@@ -16,7 +16,7 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
-
+//按钮与按钮之间的逻辑
 
 //查找设备按钮会与combobox, open button, displayLable控件交互
 void MainWindow::on_EnumButton_clicked()
