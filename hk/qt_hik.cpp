@@ -10,13 +10,26 @@ HikWindow::HikWindow()
     //一定要初始化， 私有变量未初始化不是空指针。
     //不初始化导致莫名其妙的bug
     //连判断都进不去
+
+    //指针一定要初始化
     m_pBufForDriver = nullptr;
     m_pBufForSaveImage  = nullptr;
+    m_pcMyCamera = nullptr;
+    m_hwndDisplay = nullptr;
+
+    m_nBufSizeForDriver = 0;
+    m_bOpenDevice =FALSE;
+    m_bStartGrabbing = FALSE;
+    m_nTriggerMode = 0;
+    m_nBufSizeForSaveImage = 0;
 
 }
 HikWindow::~HikWindow()
 {
+    //回收的好习惯
     delete m_pBufForDriver;
+    delete m_pBufForSaveImage;
+    delete m_pcMyCamera;
 }
 int HikWindow::EnumDevices(vector< QString> &QUserNames)
 {
@@ -25,20 +38,19 @@ int HikWindow::EnumDevices(vector< QString> &QUserNames)
     memset(&this->m_stDevList, 0, sizeof(MV_CC_DEVICE_INFO_LIST));
     int nRet = CMyCamera::EnumDevices(&this->m_stDevList);
     if(nRet != MV_OK)
-    {
-        //throw "Can not Initialized";
+    { 
         return -1;
     }
     for(size_t i = 0; i < this->m_stDevList.nDeviceNum; i++)
     {
         //设备信息
         MV_CC_DEVICE_INFO *pDeviceInfo = this->m_stDevList.pDeviceInfo[i];
-        if(pDeviceInfo == NULL)
+        if(pDeviceInfo == nullptr)
         {
             continue;
         }
-        unsigned char *pUserName = pDeviceInfo->SpecialInfo.stUsb3VInfo.chUserDefinedName;
-        string pUserName2 = (char*)pUserName;
+        unsigned char *pUserName = pDeviceInfo->SpecialInfo.stUsb3VInfo.chUserDefinedName; 
+        string pUserName2 = reinterpret_cast<char *>(pUserName);
         QUserNames.push_back( QString::fromStdString(pUserName2) );
     }
     if(this->m_stDevList.nDeviceNum == 0)
@@ -152,6 +164,7 @@ int HikWindow::StartGrabbing(HWND MainWndID)
         return -1;
     }
     m_bStartGrabbing = TRUE;
+    return nRet;
 }
 
 int HikWindow::StopGrabbing()

@@ -8,7 +8,7 @@
 #include <vector>
 #include <QString>
 #include <QImage>
-#include <QMessageBox>
+
 namespace QtHik {
 class HikWindow
 {
@@ -39,7 +39,7 @@ public:
     //关闭采集
     int StopGrabbing();
 
-    //
+    //保存Bmp图片
     int SaveBmp();
 private:
     unsigned char*  m_pBufForDriver;            // ch:用于从驱动获取图像的缓存
