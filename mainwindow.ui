@@ -53,7 +53,7 @@
    <widget class="QPushButton" name="pushButton_4">
     <property name="geometry">
      <rect>
-      <x>330</x>
+      <x>410</x>
       <y>50</y>
       <width>80</width>
       <height>20</height>
@@ -93,6 +93,19 @@
     </property>
     <property name="margin">
      <number>1</number>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>50</y>
+      <width>80</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>停止采集</string>
     </property>
    </widget>
   </widget>

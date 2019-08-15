@@ -25,11 +25,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        grab_images.cpp \
         hk/MyCamera.cpp \
         main.cpp \
         mainwindow.cpp
 
 HEADERS += \
+        grab_images.h \
         hk/MyCamera.h \
         mainwindow.h
 

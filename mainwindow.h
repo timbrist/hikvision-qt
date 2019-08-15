@@ -24,21 +24,29 @@ private slots:
 
     void on_pushButton_3_clicked();
 
-    void on_pushButton_5_clicked();
+
+
 
     void on_pushButton_4_clicked();
+
+    //开始采集
+    void on_pushButton_5_clicked();
+    //停止采集
+    void on_pushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
-
 
 //hikvision functions
 public:
     void EnumDevices();
     int OpenDevice();
 
-    //采集图片的线程
-   DWORD WINAPI grabbing_img_thread(LPVOID lpParameter);
-
+    //采集图片的线程显示
+    void display_imgs();
+    void display_images(QImage *img,
+                        unsigned int nDataLen,
+                        MV_FRAME_OUT_INFO_EX stImageInfo);
 //海康威视变量
 private:
     MV_CC_DEVICE_INFO_LIST m_stDevList;         // ch:设备信息列表结构体变量，用来存储设备列表
