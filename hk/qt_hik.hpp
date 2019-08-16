@@ -28,7 +28,7 @@ public:
     //对私有变量进行回收
     int CloseDevice();
 
-    //设置采集模式
+    //设置采集模式 //触发模式设置
     //对私有变量m_nTriggerMode 进行 0 或 1 赋值。
     int SetTriggerMode(unsigned int trigger_mode);
 
@@ -41,6 +41,9 @@ public:
 
     //保存Bmp图片
     int SaveBmp();
+
+
+
 private:
     unsigned char*  m_pBufForDriver;            // ch:用于从驱动获取图像的缓存
     unsigned int    m_nBufSizeForDriver;
@@ -48,7 +51,7 @@ private:
     /*ch:状态 | en:Status*/
     BOOL  m_bOpenDevice;                        // ch:是否打开设备
     BOOL  m_bStartGrabbing;                     // ch:是否开始抓图
-    unsigned int   m_nTriggerMode;                       // ch:触发模式
+    unsigned int   m_nTriggerMode;              // ch:触发模式
     int   m_nTriggerSource;                     // ch:触发源
     MV_SAVE_IAMGE_TYPE   m_nSaveImageType;      // ch:保存图像格式
 

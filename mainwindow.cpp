@@ -103,3 +103,21 @@ void MainWindow::on_SaveBmpButton_clicked()
        QMessageBox::information(this,"成功","保存图片成功");
    }
 }
+
+//按下触发采集
+void MainWindow::on_HardwareRadioButton_clicked()
+{
+    if( hik.SetTriggerMode(1) != MV_OK)
+    {
+        QMessageBox::information(this, "异常", "触发采集失败");
+    }
+}
+
+//连续采集
+void MainWindow::on_ContinuesRadioButton_clicked()
+{
+    if( hik.SetTriggerMode(0) != MV_OK)
+    {
+        QMessageBox::information(this, "异常", "触发采集失败");
+    }
+}

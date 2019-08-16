@@ -28,6 +28,10 @@ private slots:
 
     void on_SaveBmpButton_clicked();
 
+    void on_HardwareRadioButton_clicked();
+
+    void on_ContinuesRadioButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 
