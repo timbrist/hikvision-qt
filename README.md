@@ -9,3 +9,4 @@ Qt 5.13.0 MSVC2015 64bit
 查找，打开设备，关闭设备
 开始停止采集
 保存图片；
+![ui](https://github.com/timbrist/hikvision-qt/blob/master/screenshots/screenshots.png)
